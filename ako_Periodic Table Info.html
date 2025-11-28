@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Periodic Table Fun</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+  --glass: rgba(255,255,255,0.08);
+  --accent: #ffdd59;
+  --rounded:15px;
+  --text:#333;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
+body{
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:30px 15px;
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+
+h1{
+  font-size:2.8rem;
+  text-align:center;
+  color:var(--text);
+  text-shadow:1px 1px 6px rgba(0,0,0,0.2);
+  margin-bottom:15px;
+}
+
+p.label{
+  text-align:center;
+  margin-bottom:25px;
+  font-size:1rem;
+  color:#555;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(70px,1fr));
+  gap:15px;
+  justify-content:center;
+  width:100%;
+  max-width:700px;
+}
+
+/* Glassy element card */
+.element{
+  background:var(--glass);
+  backdrop-filter:blur(10px);
+  padding:15px;
+  border-radius:var(--rounded);
+  text-align:center;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:18px;
+  color:var(--text);
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease, transform 0.4s ease;
+  opacity:0;
+  transform:translateY(20px);
+}
+
+.element:hover{
+  background:var(--accent);
+  color:#fff;
+  transform:translateY(-8px) scale(1.1);
+  box-shadow:0 12px 25px rgba(0,0,0,0.2);
+}
+
+.info{
+  margin-top:25px;
+  text-align:center;
+  max-width:400px;
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  padding:20px;
+  border-radius:var(--rounded);
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
+  opacity:0;
+  transform:translateY(20px);
+  transition:all 0.5s ease;
+}
+
+.info.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.info h2{
+  margin:0 0 10px 0;
+  color:var(--text);
+}
+
+.info p{
+  margin:5px 0;
+  color:#555;
+}
+
+/* Background floating shapes */
+.bg-shape{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(60px);
+  opacity:0.07;
+  z-index:-1;
+}
+.bg-shape1{width:300px;height:300px;top:-80px;right:-100px;background:radial-gradient(circle at 20% 20%, #ffdd59, transparent);}
+.bg-shape2{width:400px;height:400px;bottom:-100px;left:-120px;background:radial-gradient(circle at 60% 60%, #ff6f91, transparent);}
+
+/* Fade-in animation for elements */
+@keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<div class="bg-shape bg-shape1"></div>
+<div class="bg-shape bg-shape2"></div>
+
+<h1>🌟 Periodic Table Fun 🌟</h1>
+<p class="label">Click on a card to see element information!</p>
+
+<div class="grid" id="tableGrid"></div>
+
+<div class="info" id="elementInfo">
+  <p>Click an element to see info!</p>
+</div>
+
+<script>
+// first 20 elements
+const elements=[
+  {symbol:'H', name:'Hydrogen', number:1, fact:'Most abundant element in the universe.'},
+  {symbol:'He', name:'Helium', number:2, fact:'Used in balloons to float.'},
+  {symbol:'Li', name:'Lithium', number:3, fact:'Used in batteries.'},
+  {symbol:'Be', name:'Beryllium', number:4, fact:'Light metal for aerospace.'},
+  {symbol:'B', name:'Boron', number:5, fact:'Used in glass and detergents.'},
+  {symbol:'C', name:'Carbon', number:6, fact:'Found in all living things.'},
+  {symbol:'N', name:'Nitrogen', number:7, fact:'78% of Earth\'s atmosphere.'},
+  {symbol:'O', name:'Oxygen', number:8, fact:'Essential for breathing.'},
+  {symbol:'F', name:'Fluorine', number:9, fact:'Found in toothpaste.'},
+  {symbol:'Ne', name:'Neon', number:10, fact:'Used in bright neon signs.'},
+  {symbol:'Na', name:'Sodium', number:11, fact:'Commonly found in salt.'},
+  {symbol:'Mg', name:'Magnesium', number:12, fact:'Used in fireworks.'},
+  {symbol:'Al', name:'Aluminium', number:13, fact:'Used in cans and foil.'},
+  {symbol:'Si', name:'Silicon', number:14, fact:'Used in computer chips.'},
+  {symbol:'P', name:'Phosphorus', number:15, fact:'Essential for DNA and energy.'},
+  {symbol:'S', name:'Sulfur', number:16, fact:'Used in matches and fertilizers.'},
+  {symbol:'Cl', name:'Chlorine', number:17, fact:'Disinfects water.'},
+  {symbol:'Ar', name:'Argon', number:18, fact:'Used in light bulbs.'},
+  {symbol:'K', name:'Potassium', number:19, fact:'Important for heart and muscles.'},
+  {symbol:'Ca', name:'Calcium', number:20, fact:'Essential for bones and teeth.'}
+];
+
+const grid=document.getElementById('tableGrid');
+const infoDiv=document.getElementById('elementInfo');
+
+elements.forEach((el,i)=>{
+  const div=document.createElement('div');
+  div.className='element';
+  div.style.animation=`fadeInUp 0.5s forwards`;
+  div.style.animationDelay=(i*0.1)+'s';
+  div.textContent=el.symbol;
+  div.onclick=()=>showInfo(el);
+  grid.appendChild(div);
+});
+
+function showInfo(el){
+  infoDiv.innerHTML=`
+    <h2>${el.name} (${el.symbol})</h2>
+    <p>Atomic Number: ${el.number}</p>
+    <p>Fun Fact: ${el.fact}</p>
+  `;
+  infoDiv.classList.add('show');
+}
+</script>
+
+</body>
+</html>
